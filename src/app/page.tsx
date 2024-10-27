@@ -9,13 +9,14 @@ export default function HomePage() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+  const url = process.env.NEXT_PUBLIC_BASE_URL;
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
 
     try {
-      const response = await fetch("http://localhost:4000/api/trip-plan", {
+      const response = await fetch(`${url}/api/trip-plan`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ origin, cities, dateRange, interests }),
