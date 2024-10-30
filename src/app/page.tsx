@@ -9,13 +9,18 @@ export default function HomePage() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const url = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000";
+  useEffect(() => {
+    console.log("Welcome to Trip Planner Crew!");
+    console.log(process.env.NEXT_PUBLIC_BASE_URL);
+  }, [setLoading]);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
+    console.log("Welcome to Trip Planner Crew!");
+    console.log(process.env.NEXT_PUBLIC_BASE_URL);
     setLoading(true);
     setResult(null);
-
+    console.log(url);
     try {
       const response = await fetch(`${url}/api/trip-plan`, {
         method: "POST",
@@ -25,12 +30,7 @@ export default function HomePage() {
 
       const data = await response.json();
       if (response.ok) {
-        if (data.result && data.result.length >= 1000) {
-          setResult(data.result);
-        } else {
-          console.log("Response is under 1000 characters. Retrying...");
-          handleSubmit(e); // Re-submit if the response is under 1000 characters
-        }
+        setResult(data.result);
       } else {
         setResult(data.error || "An error occurred");
       }
