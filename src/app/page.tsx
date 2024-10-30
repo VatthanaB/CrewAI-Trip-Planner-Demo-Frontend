@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 
 export default function HomePage() {
   const [origin, setOrigin] = useState("");
@@ -8,10 +8,11 @@ export default function HomePage() {
   const [interests, setInterests] = useState("");
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const url = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8000";
 
-  const url = process.env.NEXT_PUBLIC_BASE_URL;
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
     setLoading(true);
     setResult(null);
 
@@ -24,7 +25,12 @@ export default function HomePage() {
 
       const data = await response.json();
       if (response.ok) {
-        setResult(data.result);
+        if (data.result && data.result.length >= 1000) {
+          setResult(data.result);
+        } else {
+          console.log("Response is under 1000 characters. Retrying...");
+          handleSubmit(e); // Re-submit if the response is under 1000 characters
+        }
       } else {
         setResult(data.error || "An error occurred");
       }
